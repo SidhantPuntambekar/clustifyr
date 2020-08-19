@@ -41,7 +41,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">clustifyr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.99.8</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0</span>
       </span>
     </div>
 
@@ -66,6 +66,9 @@
 <li>
       <a href="articles/clustifyR.html">Introduction to clustifyr</a>
     </li>
+    <li>
+      <a href="articles/geo-annotations.html">Improving NCBI GEO submissions of scRNA-seq data</a>
+    </li>
   </ul>
 </li>
       </ul>
@@ -88,18 +91,33 @@
 
       </header><div class="row">
   <div class="contents col-md-9">
-<div id="clustifyr" class="section level1">
+<div id="clustifyr-" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
-<a href="#clustifyr" class="anchor"></a>clustifyr <img src="reference/figures/logo.png" align="right">
+<a href="#clustifyr-" class="anchor"></a>clustifyr <img src="reference/figures/logo.png" align="right">
 </h1></div>
+<!-- badges: start -->
 
 <p>clustifyr classifies cells and clusters in single-cell RNA sequencing experiments using reference bulk RNA-seq data sets, sorted microarray expression data, single-cell gene signatures, or lists of marker genes.</p>
 <p>Single cell transcriptomes are difficult to annotate without knowledge of the underlying biology. Even with this knowledge, accurate identification can be challenging due to the lack of detectable expression of common marker genes. clustifyr solves this problem by automatically annotating single cells or clusters of cells using single-cell RNA-seq, bulk RNA-seq data, microarray, or marker gene lists. Additional functions enable exploratory analysis of similarities between single cell RNA-seq datasets and reference data.</p>
 <div id="installation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
-<div class="sourceCode" id="cb1"><pre class="r"><span class="co"># install.packages("remotes")</span>
+<p>Install the Bioconductor version with:</p>
+<div class="sourceCode" id="cb1"><pre class="r"><span class="kw">if</span> (!<span class="fu"><a href="https://rdrr.io/r/base/ns-load.html">requireNamespace</a></span>(<span class="st">"BiocManager"</span>, <span class="kw">quietly</span> <span class="kw">=</span> <span class="fl">TRUE</span>))
+    <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"BiocManager"</span>)
+
+<span class="kw pkg">BiocManager</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocManager/man/install.html">install</a></span>(<span class="st">"clustifyr"</span>)</pre></div>
+<p>Install the development version with:</p>
+<div class="sourceCode" id="cb2"><pre class="r"><span class="co"># install.packages("remotes")</span>
 <span class="kw pkg">remotes</span><span class="kw ns">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span>(<span class="st">"rnabioco/clustifyr"</span>)</pre></div>
+</div>
+<div id="additional-info" class="section level2">
+<h2 class="hasAnchor">
+<a href="#additional-info" class="anchor"></a>Additional info</h2>
+<p><a href="https://rnabioco.github.io/clustifyr/articles/clustifyR.html">Intro</a> tutorial</p>
+<p><a href="https://rnabioco.github.io/clustifyrdata/articles/otherformats.html">Additional</a> tutorials</p>
+<p><a href="https://github.com/rnabioco/clustifyrdata/blob/master/inst/run_clustifyr.R">Script</a> for benchmarking, compatible with <a href="https://github.com/tabdelaal/scRNAseq_Benchmark"><code>scRNAseq_Benchmark</code></a></p>
+<p>More reference data (including tabula muris, immgen, etc) are available at supplement package <a href="https://github.com/rnabioco/clustifyrdata"><code>clustifyrdata</code></a>. Also see <a href="https://rnabioco.github.io/clustifyrdata/articles/download_refs.html">list</a> for individual downloads.</p>
 </div>
 <div id="example-usage" class="section level2">
 <h2 class="hasAnchor">
@@ -112,7 +130,7 @@
 <li>a matrix of mean normalized scRNA-seq UMI counts by cell type (<code>cbmc_ref</code>):</li>
 </ul>
 <p>We then calculate correlation coefficients and plot them on a pre-calculated projection (stored in <code>pbmc_meta</code>).</p>
-<div class="sourceCode" id="cb2"><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">clustifyr</span>)
+<div class="sourceCode" id="cb3"><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">clustifyr</span>)
 
 <span class="co"># calculate correlation</span>
 <span class="no">res</span> <span class="kw">&lt;-</span> <span class="fu"><a href="reference/clustify.html">clustify</a></span>(
@@ -146,7 +164,7 @@
 )</pre></div>
 <p><img src="reference/figures/readme_example-1.png"><!-- --></p>
 <p><code><a href="reference/clustify.html">clustify()</a></code> can also take a clustered <code>SingleCellExperiment</code> or <code>seurat</code> object (both v2 and v3) and assign identities.</p>
-<div class="sourceCode" id="cb3"><pre class="r"><span class="co"># for SingleCellExperiment</span>
+<div class="sourceCode" id="cb4"><pre class="r"><span class="co"># for SingleCellExperiment</span>
 <span class="fu"><a href="reference/clustify.html">clustify</a></span>(
   <span class="kw">input</span> <span class="kw">=</span> <span class="no">sce_small</span>,          <span class="co"># an SCE object</span>
   <span class="kw">ref_mat</span> <span class="kw">=</span> <span class="no">cbmc_ref</span>,         <span class="co"># matrix of RNA-seq expression data for each cell type</span>
@@ -163,10 +181,9 @@
 <span class="co">#&gt; colnames(200): AZ_A1 AZ_A10 ... HP1502401_E18 HP1502401_E19</span>
 <span class="co">#&gt; colData names(35): cell_quality cell_type1 ... type r</span>
 <span class="co">#&gt; reducedDimNames(0):</span>
-<span class="co">#&gt; spikeNames(1): ERCC</span>
+<span class="co">#&gt; altExpNames(0):</span>
 
 <span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">Seurat</span>)
-
 <span class="co"># for seurat2</span>
 <span class="fu"><a href="reference/clustify.html">clustify</a></span>(
   <span class="kw">input</span> <span class="kw">=</span> <span class="no">s_small</span>,
@@ -186,15 +203,14 @@
 )
 <span class="co">#&gt; An object of class Seurat </span>
 <span class="co">#&gt; 230 features across 80 samples within 1 assay </span>
-<span class="co">#&gt; Active assay: RNA (230 features)</span>
+<span class="co">#&gt; Active assay: RNA (230 features, 20 variable features)</span>
 <span class="co">#&gt;  2 dimensional reductions calculated: pca, tsne</span></pre></div>
 <p>New reference matrix can be made directly from <code>SingleCellExperiment</code> and <code>seurat</code> objects as well. Other scRNAseq experiment object types are supported as well.</p>
-<div class="sourceCode" id="cb4"><pre class="r"><span class="co"># make reference from SingleCellExperiment objects</span>
+<div class="sourceCode" id="cb5"><pre class="r"><span class="co"># make reference from SingleCellExperiment objects</span>
 <span class="no">sce_ref</span> <span class="kw">&lt;-</span> <span class="fu"><a href="reference/object_ref.html">object_ref</a></span>(
   <span class="kw">input</span> <span class="kw">=</span> <span class="no">sce_small</span>,               <span class="co"># SCE object</span>
   <span class="kw">cluster_col</span> <span class="kw">=</span> <span class="st">"cell_type1"</span>       <span class="co"># name of column in colData containing cell identities</span>
 )
-<span class="co">#&gt; recognized object type - SingleCellExperiment</span>
 
 <span class="co"># make reference from seurat objects</span>
 <span class="no">s_ref</span> <span class="kw">&lt;-</span> <span class="fu"><a href="reference/seurat_ref.html">seurat_ref</a></span>(
@@ -211,7 +227,7 @@
 <span class="co">#&gt; TCL1A    4.394310 2.837922 0.000000 0.000000</span>
 <span class="co">#&gt; HLA-DQB1 4.380289 4.325293 0.000000 1.666167</span></pre></div>
 <p><code><a href="reference/clustify_lists.html">clustify_lists()</a></code> handles identity assignment of matrix or <code>SingleCellExperiment</code> and <code>seurat</code> objects based on marker gene lists.</p>
-<div class="sourceCode" id="cb5"><pre class="r"><span class="fu"><a href="reference/clustify_lists.html">clustify_lists</a></span>(
+<div class="sourceCode" id="cb6"><pre class="r"><span class="fu"><a href="reference/clustify_lists.html">clustify_lists</a></span>(
   <span class="kw">input</span> <span class="kw">=</span> <span class="no">pbmc_matrix_small</span>,
   <span class="kw">metadata</span> <span class="kw">=</span> <span class="no">pbmc_meta</span>,
   <span class="kw">cluster_col</span> <span class="kw">=</span> <span class="st">"classified"</span>,
@@ -249,12 +265,10 @@
 <span class="co">#&gt; An old seurat object</span>
 <span class="co">#&gt;  230 genes across 80 samples</span></pre></div>
 </div>
-<div id="additional-reference-data" class="section level2">
+<div id="code-of-conduct" class="section level2">
 <h2 class="hasAnchor">
-<a href="#additional-reference-data" class="anchor"></a>Additional reference data</h2>
-<p>More reference data (including tabula muris, immgen, etc) are available at <a href="https://github.com/rnabioco/clustifyrdata" class="uri">https://github.com/rnabioco/clustifyrdata</a>.</p>
-<p>Also see list for individual downloads at <a href="https://rnabioco.github.io/clustifyrdata/articles/download_refs.html" class="uri">https://rnabioco.github.io/clustifyrdata/articles/download_refs.html</a></p>
-<p>Additional tutorials at <a href="https://rnabioco.github.io/clustifyrdata/articles/otherformats.html" class="uri">https://rnabioco.github.io/clustifyrdata/articles/otherformats.html</a></p>
+<a href="#code-of-conduct" class="anchor"></a>Code of Conduct</h2>
+<p>Please note that the clustifyr project is released with a <a href="http://rnabioco.github.io/clustifyr/CODE_OF_CONDUCT.html">Contributor Code of Conduct</a>. By contributing to this project, you agree to abide by its terms.</p>
 </div>
 </div>
   </div>
@@ -281,6 +295,13 @@
 </li>
 </ul>
 </div>
+<div class="community">
+<h2>Community</h2>
+<ul class="list-unstyled">
+<li><a href="CONTRIBUTING.html">Contributing guide</a></li>
+<li><a href="CODE_OF_CONDUCT.html">Code of conduct</a></li>
+</ul>
+</div>
 <div class="citation">
 <h2>Citation</h2>
 <ul class="list-unstyled">
@@ -292,8 +313,6 @@
 <ul class="list-unstyled">
 <li>Rui Fu <br><small class="roles"> Author, maintainer </small>  </li>
 <li>Kent Riemondy <br><small class="roles"> Author </small>  </li>
-<li>
-<a href="https://rockyrna.org">RNA Bioscience Initiative</a> <br><small class="roles"> Funder </small>  </li>
 <li><a href="authors.html">All authors...</a></li>
 </ul>
 </div>
@@ -301,8 +320,8 @@
   <div class="dev-status">
 <h2>Dev status</h2>
 <ul class="list-unstyled">
-<li><a href="https://travis-ci.org/rnabioco/clustifyr"><img src="https://travis-ci.org/rnabioco/clustifyr.svg?branch=master" alt="Build Status"></a></li>
-<li><a href="https://codecov.io/github/rnabioco/clustifyr?branch=master"><img src="https://codecov.io/gh/rnabioco/clustifyr/branch/master/graph/badge.svg" alt="Coverage status"></a></li>
+<li><a href="https://github.com/rnabioco/clustifyr/actions"><img src="https://github.com/rnabioco/clustifyr/workflows/R-CMD-check/badge.svg" alt="R build status"></a></li>
+<li><a href="https://codecov.io/gh/rnabioco/clustifyr"><img src="https://codecov.io/gh/rnabioco/clustifyr/branch/master/graph/badge.svg" alt="codecov"></a></li>
 </ul>
 </div>
 </div>
@@ -310,11 +329,11 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by Rui Fu, Kent Riemondy, <a href="https://rockyrna.org">RNA Bioscience Initiative</a>.</p>
+  <p>Developed by Rui Fu, Kent Riemondy.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.0.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
 </div>
 
       </footer>
